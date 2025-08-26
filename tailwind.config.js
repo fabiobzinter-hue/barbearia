@@ -1,0 +1,73 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        // Cores da barbearia: roxo, lilás, degradê, creme, marrom
+        primary: {
+          50: '#f3f1ff',
+          100: '#ebe5ff',
+          200: '#d9ccff',
+          300: '#bea6ff',
+          400: '#9f75ff',
+          500: '#843dff',
+          600: '#7716ff',
+          700: '#6b04fd',
+          800: '#5a03d4',
+          900: '#4b05ad',
+          950: '#2c0076',
+        },
+        secondary: {
+          50: '#fdf4ff',
+          100: '#fae8ff',
+          200: '#f5d0fe',
+          300: '#f0abfc',
+          400: '#e879f9',
+          500: '#d946ef',
+          600: '#c026d3',
+          700: '#a21caf',
+          800: '#86198f',
+          900: '#701a75',
+          950: '#4a044e',
+        },
+        accent: {
+          50: '#fefdf9',
+          100: '#fefbf3',
+          200: '#fef7e7',
+          300: '#fdefd1',
+          400: '#fbe2a9',
+          500: '#f8d181',
+          600: '#f4c052',
+          700: '#f0b233',
+          800: '#ec9006',
+          900: '#d4771a',
+          950: '#8b4513',
+        },
+        neutral: {
+          50: '#f9f7f4',
+          100: '#f2ede6',
+          200: '#e6ddd0',
+          300: '#d5c7b3',
+          400: '#c2ad94',
+          500: '#b39378',
+          600: '#a6826d',
+          700: '#8b6d5c',
+          800: '#715a4e',
+          900: '#5c4a41',
+          950: '#2f2622',
+        },
+      },
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(135deg, #7716ff 0%, #d946ef 100%)',
+        'gradient-secondary': 'linear-gradient(135deg, #4b05ad 0%, #701a75 100%)',
+        'gradient-accent': 'linear-gradient(135deg, #f8d181 0%, #8b4513 100%)',
+      },
+    },
+  },
+  plugins: [require('@tailwindcss/forms')],
+}
