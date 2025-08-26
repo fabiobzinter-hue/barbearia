@@ -46,7 +46,7 @@ export const googleCalendarConfig = {
 // API Helper Functions
 export class ApiService {
   // n8n Webhook calls
-  static async sendToN8n(endpoint: string, data: any) {
+  static async sendToN8n(endpoint: string, data: Record<string, any>) {
     try {
       const response = await fetch(`${n8nConfig.baseUrl}${endpoint}`, {
         method: 'POST',
@@ -77,20 +77,27 @@ export class ApiService {
     })
   }
 
-  static async sendAppointmentReminder(clientPhone: string, appointmentDetails: any) {
+  static async sendAppointmentReminder(clientPhone: string, appointmentDetails: {
+    time: string;
+    date?: string;
+    professional?: string;
+  }) {
     const message = `Olá! Lembramos que você tem um agendamento amanhã às ${appointmentDetails.time} na Vince Barbearia. Confirme sua presença respondendo SIM. 💈`
     
     return this.sendWhatsAppMessage(clientPhone, message, 'template')
   }
 
-  static async sendPromotionalMessage(clientPhone: string, promotion: any) {
+  static async sendPromotionalMessage(clientPhone: string, promotion: {
+    description: string;
+    validUntil: string;
+  }) {
     const message = `🎉 Oferta especial para você! ${promotion.description}. Válida até ${promotion.validUntil}. Agende já pelo WhatsApp!`
     
     return this.sendWhatsAppMessage(clientPhone, message)
   }
 
   // Client Management
-  static async createClient(clientData: any) {
+  static async createClient(clientData: Record<string, any>) {
     return this.sendToN8n(n8nConfig.endpoints.createClient, {
       ...clientData,
       createdAt: new Date().toISOString(),
@@ -110,17 +117,22 @@ export class ApiService {
   }
 
   // Appointment Management
-  static async syncAppointmentToCalendar(appointment: any) {
+  static async syncAppointmentToCalendar(appointment: {
+    professionalId: string;
+    [key: string]: any;
+  }) {
     // This would integrate with Google Calendar API
+    const professionalCalendar = googleCalendarConfig.calendarIds.professionals[appointment.professionalId as keyof typeof googleCalendarConfig.calendarIds.professionals]
+    
     return this.sendToN8n(n8nConfig.endpoints.createAppointment, {
       ...appointment,
       syncToCalendar: true,
-      calendarId: googleCalendarConfig.calendarIds.professionals[appointment.professionalId] || googleCalendarConfig.calendarIds.main
+      calendarId: professionalCalendar || googleCalendarConfig.calendarIds.main
     })
   }
 
   // Sales Integration
-  static async recordSale(saleData: any) {
+  static async recordSale(saleData: Record<string, any>) {
     return this.sendToN8n(n8nConfig.endpoints.recordSale, {
       ...saleData,
       timestamp: new Date().toISOString(),
@@ -161,7 +173,15 @@ export class GoogleCalendarService {
     }
   }
 
-  static async createCalendarEvent(appointment: any) {
+  static async createCalendarEvent(appointment: {
+    clientName: string;
+    clientEmail?: string;
+    services: string[];
+    startTime: string;
+    endTime: string;
+    value: number;
+    notes?: string;
+  }) {
     if (!this.gapi) {
       await this.initializeGapi()
     }
@@ -203,7 +223,7 @@ export class GoogleCalendarService {
     }
   }
 
-  static async updateCalendarEvent(eventId: string, updates: any) {
+  static async updateCalendarEvent(eventId: string, updates: Record<string, any>) {
     if (!this.gapi) {
       await this.initializeGapi()
     }
